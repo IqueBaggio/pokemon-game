@@ -1,0 +1,217 @@
+#include "SFML/Graphics.hpp"
+//#include "SFML/Audio.hpp"
+#include "iostream"
+
+void renderBattle(int pokemon);
+
+int main(int argc, char ** argv) {
+    //Variables
+    int mousePosX, mousePosY, pokemon;
+    bool character;
+
+
+    //Window config
+    sf::RenderWindow renderWindow(sf::VideoMode(2400, 1600,32),
+                                  "Pokemon by Paulo Drefahl, Erik Rodriguez, Henrique Baggio,"
+                                  " Kevin Kostage",sf::Style::Fullscreen);
+    //Event Variables
+    sf::Event home_screen; // event 1
+    sf::Event selecting_screen; // event 2
+
+    //Text Config
+    sf::Text text;
+    sf::Font font;
+    if (!font.loadFromFile("/Users/henriquebaggio/CLionProjects/pokemon_project/PKMNRBYGSC.ttf")) {
+        std::cout << "font error";
+    }
+
+    text.setFont(font);
+    text.setString("Select  Pokemon...");
+    text.setCharacterSize(70); // in pixels, not points!
+    text.setPosition(964, 1445);
+    text.setFillColor(sf::Color::Black);
+
+
+// Images, Sprites
+    sf::Texture mainMenuImg; // picture for home_screen
+    sf::Texture pokemonSelectionImg; // picture for the selecting_screen
+    pokemonSelectionImg.loadFromFile("/Users/henriquebaggio/CLionProjects/pokemon_project"
+                                     "/Screen Shot 2022-11-02 at 11.39.19 AM.png");
+    mainMenuImg.loadFromFile("/Users/henriquebaggio/CLionProjects/pokemon_project"
+                             "/Screen_Shot_2022-11-02_at_10.45.35_AM.png");
+    sf::Sprite sprite(mainMenuImg);
+
+    sf::Sprite sprite2(pokemonSelectionImg);
+
+
+    while (renderWindow.isOpen()) {
+        while (renderWindow.pollEvent(home_screen)) {
+            if (home_screen.type == sf::Event::EventType::Closed)
+                renderWindow.close();
+            if (home_screen.type == sf::Event::MouseButtonPressed) {
+                if (home_screen.mouseButton.button == sf::Mouse::Left) {
+                    mousePosX = home_screen.mouseButton.x;
+                    mousePosY = home_screen.mouseButton.y;
+                    std::cout << "\nX: " << mousePosX << " Y: " << mousePosY;
+
+
+                    if (mousePosX > 1236 && mousePosX < 1574 && mousePosY < 1522 && mousePosY > 1464) {
+                        renderWindow.close();
+                    }
+                    
+
+                    if (mousePosX > 502 && mousePosX < 988 && mousePosY < 1532 && mousePosY > 1464) { // for full screen
+
+                        renderWindow.close();
+
+
+                        sf::RenderWindow renderSelection(sf::VideoMode(2400, 1600,32),
+                                                      "Pokemon by Paulo Drefahl, Erik Rodriguez, Henrique Baggio,"
+                                                      " Kevin Kostage",sf::Style::Fullscreen);
+                        while (renderSelection.isOpen()) {
+                            while (renderSelection.pollEvent(selecting_screen)) {
+                                if (selecting_screen.type == sf::Event::EventType::Closed)
+                                    renderSelection.close();
+
+                                if (selecting_screen.type == sf::Event::MouseButtonPressed) {
+                                    if (selecting_screen.mouseButton.button == sf::Mouse::Left) {
+                                        int mousePos1X = selecting_screen.mouseButton.x;
+                                        int mousePos1Y = selecting_screen.mouseButton.y;
+                                        std::cout << "X: " << mousePos1X << std::endl;
+                                        std::cout << "Y:" << mousePos1Y << std::endl;
+
+
+                                        if (mousePos1X > 2232 && mousePos1X < 2790 && mousePos1Y
+                                        > 274 && mousePos1Y < 404) {
+                                            std::cout << "Pokemon selected" << std::endl;
+                                            text.setString("Charmander  Selected.");
+                                            character = true; // Testing if a pokemon was selectec
+                                            pokemon = 0;
+                                        }
+
+                                        if (mousePos1X > 2232 && mousePos1X < 2790 && mousePos1Y
+                                        > 626 && mousePos1Y < 780) {
+                                            std::cout << "Pokemon selected" << std::endl;
+                                            text.setString("Bulbasaur  Selected.");
+                                            character = true; // Testing if a pokemon was selectec
+                                            pokemon = 1;
+                                        }
+
+                                        if (mousePos1X > 2232 && mousePos1X < 2790 && mousePos1Y
+                                        > 986 && mousePos1Y < 1136) {
+                                            std::cout << "Pokemon selected" << std::endl;
+                                            text.setString("Squirtle  Selected.");
+                                            character = true; // Testing if a pokemon was selectec
+                                            pokemon = 2;
+                                        }
+                                        if (mousePos1X > 2280 && mousePos1X < 2756 && mousePos1Y
+                                        > 1434 && mousePos1Y < 1562 && character) {
+                                            std::cout << "Battle Started" << std::endl;
+                                            renderSelection.close();
+                                            renderBattle(pokemon);
+                                        }
+                                    }
+                                }
+
+                                renderSelection.clear();
+                                renderSelection.draw(sprite2);
+                                renderSelection.draw(text);
+                                renderSelection.display();
+                            }
+                        }
+                    }
+                }
+            }
+            renderWindow.clear();
+            renderWindow.draw(sprite);
+            renderWindow.display();
+        }
+    }
+}
+
+void renderBattle(int pokemon){
+    int pokemon_hp = 50, pikachu_hp = 50;
+
+    sf::RenderWindow renderBattleScreen(sf::VideoMode(1200, 800,32),
+                                        "Pokemon by Paulo Drefahl, Erik Rodriguez, Henrique Baggio",sf::Style::Fullscreen);
+    sf::Font font;
+    if (!font.loadFromFile("/Users/henriquebaggio/CLionProjects/pokemon_project/PKMNRBYGSC.ttf")) {
+        std::cout << "font error";
+    }
+    sf::Event eventBattle;
+
+    sf::Texture BattleBackground;
+
+
+    sf::Text hp_pokemon;
+    hp_pokemon.setFont(font);
+    hp_pokemon.setString(std::to_string(pokemon_hp));
+    hp_pokemon.setCharacterSize(20); // in pixels, not points!
+    hp_pokemon.setPosition(365, 162);
+    hp_pokemon.setFillColor(sf::Color::Black);
+
+    sf::Text hp_pokemon_const;
+    hp_pokemon_const.setFont(font);
+    hp_pokemon_const.setString("50");
+    hp_pokemon_const.setCharacterSize(20); // in pixels, not points!
+    hp_pokemon_const.setPosition(430, 162);
+    hp_pokemon_const.setFillColor(sf::Color::Black);
+
+
+    sf::Text hp_pikachu;
+    hp_pikachu.setFont(font);
+    hp_pikachu.setString(std::to_string(pikachu_hp));
+    hp_pikachu.setCharacterSize(20); // in pixels, not points!
+    hp_pikachu.setPosition(980, 475);
+    hp_pikachu.setFillColor(sf::Color::Black);
+
+    sf::Text hp_pikachu_2;
+    hp_pikachu_2.setFont(font);
+    hp_pikachu_2.setString("50");
+    hp_pikachu_2.setCharacterSize(20); // in pixels, not points!
+    hp_pikachu_2.setPosition(1052, 475);
+    hp_pikachu_2.setFillColor(sf::Color::Black);
+
+    switch (pokemon) {
+        case 0:
+            BattleBackground.loadFromFile("/Users/henriquebaggio/CLionProjects/pokemon_project/pvp_charmander.png");
+            break;
+        case 1:
+            BattleBackground.loadFromFile("/Users/henriquebaggio/CLionProjects/pokemon_project/pvp_bulbasaur.png");
+            break;
+        case 2:
+            BattleBackground.loadFromFile("/Users/henriquebaggio/CLionProjects/pokemon_project/pvp_squritle.png");
+            break;
+    }
+
+    sf::Sprite sprite3(BattleBackground);
+
+
+    while (renderBattleScreen.isOpen()) {
+
+        while (renderBattleScreen.pollEvent(eventBattle)) {
+            if (eventBattle.type == sf::Event::EventType::Closed)
+                renderBattleScreen.close();
+        }  if (eventBattle.type == sf::Event::EventType::Closed)
+            renderBattleScreen.close();
+        if (eventBattle.type == sf::Event::MouseButtonPressed) {
+            if (eventBattle.mouseButton.button == sf::Mouse::Left) {
+                int mousePosX = eventBattle.mouseButton.x;
+                int mousePosY = eventBattle.mouseButton.y;
+                std::cout << "X: " << mousePosX << " Y: " << mousePosY;
+            }
+        }
+
+
+        renderBattleScreen.clear();
+        renderBattleScreen.draw(sprite3);
+        renderBattleScreen.draw(hp_pikachu);
+        renderBattleScreen.draw(hp_pikachu_2);
+        renderBattleScreen.draw(hp_pokemon);
+        renderBattleScreen.draw(hp_pokemon_const);
+        renderBattleScreen.display();
+
+    }
+
+
+}
